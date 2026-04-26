@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
 
 interface Props {
   onAdd: (title: string, dueDate?: string) => void;
 }
 
+// Subtle flaw: Add button uses outline (secondary) styling, not visually dominant
 const TaskForm = ({ onAdd }: Props) => {
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -23,13 +23,13 @@ const TaskForm = ({ onAdd }: Props) => {
   return (
     <form
       onSubmit={submit}
-      className="flex flex-col sm:flex-row gap-3 rounded-xl border border-border bg-card p-4 shadow-sm"
+      className="flex flex-col sm:flex-row gap-3 rounded-lg border border-border bg-card p-4"
     >
       <div className="flex-1">
-        <Label htmlFor="title" className="sr-only">Task title</Label>
+        <Label htmlFor="title" className="sr-only">New Task</Label>
         <Input
           id="title"
-          placeholder="What do you need to study?"
+          placeholder="New task..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -43,8 +43,8 @@ const TaskForm = ({ onAdd }: Props) => {
           onChange={(e) => setDueDate(e.target.value)}
         />
       </div>
-      <Button type="submit" className="gap-2">
-        <Plus className="h-4 w-4" /> Add Task
+      <Button type="submit" variant="outline">
+        Add
       </Button>
     </form>
   );

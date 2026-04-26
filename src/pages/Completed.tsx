@@ -1,7 +1,7 @@
 import TaskItem from "@/components/TaskItem";
 import { useTasks } from "@/hooks/useTasks";
-import { CheckCircle2 } from "lucide-react";
 
+// Subtle flaw: no toast/confirmation when restoring; restore is a small text link in TaskItem.
 const Completed = () => {
   const { tasks, toggleTask, updateTask, deleteTask } = useTasks();
   const completed = tasks
@@ -13,17 +13,13 @@ const Completed = () => {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Completed</h1>
         <p className="text-sm text-muted-foreground">
-          {completed.length} {completed.length === 1 ? "task" : "tasks"} finished. Nice work!
+          {completed.length} {completed.length === 1 ? "task" : "tasks"} completed.
         </p>
       </div>
 
       {completed.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-card p-12 text-center">
-          <CheckCircle2 className="mx-auto h-10 w-10 text-muted-foreground" />
-          <p className="mt-3 font-medium text-foreground">Nothing completed yet</p>
-          <p className="text-sm text-muted-foreground">
-            Finish a task and it will show up here.
-          </p>
+        <div className="rounded-lg border border-border bg-card p-10 text-center">
+          <p className="text-sm text-muted-foreground">No completed tasks yet.</p>
         </div>
       ) : (
         <div className="space-y-2">
