@@ -12,13 +12,13 @@ const navItems = [
 const Layout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+      <header className="sticky top-0 z-40 border-b border-border bg-card">
         <div className="container flex h-16 items-center justify-between gap-4">
           <NavLink to="/" className="flex items-center gap-2 font-semibold text-foreground">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-primary text-primary-foreground shadow-md">
-              <GraduationCap className="h-5 w-5" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent text-primary">
+              <GraduationCap className="h-4 w-4" />
             </span>
-            <span className="text-lg tracking-tight">StudyFlow</span>
+            <span className="text-base tracking-tight">StudyFlow</span>
           </NavLink>
 
           <nav className="flex items-center gap-1 overflow-x-auto">
@@ -27,8 +27,8 @@ const Layout = () => {
                 key={item.to}
                 to={item.to}
                 end={item.end}
-                className="px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors whitespace-nowrap"
-                activeClassName="!text-primary !bg-accent"
+                className="px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
+                activeClassName="!text-foreground"
               >
                 {item.label}
               </NavLink>
@@ -40,16 +40,6 @@ const Layout = () => {
       <main className="flex-1 container py-8">
         <Outlet />
       </main>
-
-      <footer className="border-t border-border bg-card">
-        <div className="container flex flex-col sm:flex-row items-center justify-between gap-2 py-4 text-sm text-muted-foreground">
-          <p>StudyFlow © 2026</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-foreground transition-colors">Help</a>
-            <a href="#" className="hover:text-foreground transition-colors">About</a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

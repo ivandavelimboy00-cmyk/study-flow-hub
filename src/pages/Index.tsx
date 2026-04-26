@@ -19,55 +19,59 @@ const Index = () => {
     .slice(0, 5);
 
   return (
-    <div className="space-y-8">
-      <section className="rounded-2xl bg-gradient-primary p-8 text-primary-foreground shadow-lg">
-        <p className="text-sm/none opacity-80">Welcome back,</p>
-        <h1 className="mt-1 text-3xl sm:text-4xl font-semibold tracking-tight">
-          {profile.username} 👋
+    <div className="space-y-6">
+      {/* Subtle flaw: plain welcome header, no strong CTA emphasis */}
+      <section>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Welcome back, {profile.username}
         </h1>
-        <p className="mt-2 max-w-xl text-primary-foreground/80">
-          You have {pending} pending {pending === 1 ? "task" : "tasks"}. Keep the momentum going—
-          your goal is {profile.dailyGoal} tasks per day.
+        <p className="mt-1 text-sm text-muted-foreground">
+          You have {pending} pending {pending === 1 ? "task" : "tasks"} today.
         </p>
-        <Button asChild size="lg" variant="secondary" className="mt-6 gap-2">
-          <Link to="/tasks">
-            <Plus className="h-4 w-4" /> Add New Task
-          </Link>
-        </Button>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Total Tasks" value={total} icon={ListTodo} tone="primary" />
-        <StatCard label="Completed" value={completed} icon={CheckCircle2} tone="success" />
-        <StatCard label="Pending" value={pending} icon={Clock} tone="warning" />
+        <StatCard label="Total Tasks" value={total} icon={ListTodo} />
+        <StatCard label="Completed" value={completed} icon={CheckCircle2} />
+        <StatCard label="Pending" value={pending} icon={Clock} />
       </section>
 
+      {/* Subtle flaw: Add Task button is outline-styled, not visually dominant as primary action */}
+      <div>
+        <Button asChild variant="outline" size="sm" className="gap-2">
+          <Link to="/tasks">
+            <Plus className="h-4 w-4" /> Add Task
+          </Link>
+        </Button>
+      </div>
+
+      {/* Subtle flaw: upcoming tasks placed lower, no strong visual priority */}
       <section>
-        <div className="mb-4 flex items-end justify-between">
+        <div className="mb-3 flex items-end justify-between">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">Upcoming deadlines</h2>
-            <p className="text-sm text-muted-foreground">Your next few tasks at a glance.</p>
+            <h2 className="text-base font-semibold tracking-tight text-foreground">
+              Upcoming tasks
+            </h2>
           </div>
-          <Link to="/tasks" className="text-sm font-medium text-primary hover:underline">
-            View all →
+          <Link to="/tasks" className="text-sm text-muted-foreground hover:text-foreground">
+            View all
           </Link>
         </div>
 
         {upcoming.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
-            <CalendarDays className="mx-auto h-8 w-8 text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">No upcoming tasks. Time to plan!</p>
+          <div className="rounded-lg border border-border bg-card p-8 text-center">
+            <CalendarDays className="mx-auto h-7 w-7 text-muted-foreground" />
+            <p className="mt-2 text-sm text-muted-foreground">No upcoming tasks.</p>
           </div>
         ) : (
-          <ul className="space-y-2">
+          <ul className="rounded-lg border border-border bg-card divide-y divide-border">
             {upcoming.map((t) => (
               <li
                 key={t.id}
-                className="flex items-center justify-between rounded-xl border border-border bg-card p-4 shadow-sm"
+                className="flex items-center justify-between px-4 py-3"
               >
-                <span className="font-medium text-foreground">{t.title}</span>
-                <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-                  <CalendarDays className="h-4 w-4" />
+                <span className="text-sm text-foreground">{t.title}</span>
+                <span className="text-xs text-muted-foreground">
                   {new Date(t.dueDate!).toLocaleDateString(undefined, {
                     month: "short",
                     day: "numeric",

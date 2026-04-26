@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { Check, Pencil, Trash2, Undo2, X, CalendarDays } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Task } from "@/types/task";
 
@@ -20,6 +18,10 @@ const formatDate = (iso?: string) => {
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 };
 
+// Subtle flaws:
+// - Edit/Delete/Restore are small text links (not clear icon buttons)
+// - Completed tasks differ only by a small checkmark + faint strike-through (low contrast)
+// - Flat row style with minimal separation
 const TaskItem = ({ task, onToggle, onDelete, onUpdate, variant = "default" }: Props) => {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(task.title);
@@ -31,22 +33,11 @@ const TaskItem = ({ task, onToggle, onDelete, onUpdate, variant = "default" }: P
     setEditing(false);
   };
 
-  const overdue =
-    !task.completed &&
-    task.dueDate &&
-    new Date(task.dueDate).setHours(23, 59, 59) < Date.now();
-
   return (
-    <div
-      className={cn(
-        "group flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:shadow-md",
-        task.completed && "bg-success-soft/40 border-success/20",
-      )}
-    >
+    <div className="flex items-center gap-3 rounded-md border border-border bg-card px-4 py-3">
       <Checkbox
         checked={task.completed}
         onCheckedChange={() => onToggle(task.id)}
-        className="h-5 w-5"
         aria-label={task.completed ? "Mark as pending" : "Mark as completed"}
       />
 
@@ -64,69 +55,55 @@ const TaskItem = ({ task, onToggle, onDelete, onUpdate, variant = "default" }: P
         <div className="flex-1 min-w-0">
           <p
             className={cn(
-              "font-medium text-foreground truncate",
+              "text-sm text-foreground truncate",
               task.completed && "line-through text-muted-foreground",
             )}
           >
             {task.title}
           </p>
-          <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-            {variant === "completed" && task.completedAt ? (
-              <span className="inline-flex items-center gap-1 text-success">
-                <Check className="h-3 w-3" /> Completed {formatDate(task.completedAt)}
-              </span>
-            ) : task.dueDate ? (
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1",
-                  overdue && "text-destructive font-medium",
-                )}
-              >
-                <CalendarDays className="h-3 w-3" /> Due {formatDate(task.dueDate)}
-                {overdue && " · Overdue"}
-              </span>
-            ) : (
-              <span>No due date</span>
-            )}
-          </div>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {variant === "completed" && task.completedAt
+              ? `Completed ${formatDate(task.completedAt)}`
+              : task.dueDate
+                ? `Due ${formatDate(task.dueDate)}`
+                : "No due date"}
+          </p>
         </div>
       )}
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-3 text-xs">
         {editing ? (
           <>
-            <Button size="icon" variant="ghost" onClick={save} aria-label="Save">
-              <Check className="h-4 w-4" />
-            </Button>
-            <Button size="icon" variant="ghost" onClick={() => setEditing(false)} aria-label="Cancel">
-              <X className="h-4 w-4" />
-            </Button>
+            <button onClick={save} className="text-muted-foreground hover:text-foreground">
+              Save
+            </button>
+            <button onClick={() => setEditing(false)} className="text-muted-foreground hover:text-foreground">
+              Cancel
+            </button>
           </>
         ) : (
           <>
             {variant === "completed" ? (
-              <Button
-                size="sm"
-                variant="ghost"
+              <button
                 onClick={() => onToggle(task.id)}
-                className="gap-1 text-primary hover:text-primary"
+                className="text-muted-foreground hover:text-foreground"
               >
-                <Undo2 className="h-4 w-4" /> Restore
-              </Button>
+                Restore
+              </button>
             ) : (
-              <Button size="icon" variant="ghost" onClick={() => setEditing(true)} aria-label="Edit">
-                <Pencil className="h-4 w-4" />
-              </Button>
+              <button
+                onClick={() => setEditing(true)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Edit
+              </button>
             )}
-            <Button
-              size="icon"
-              variant="ghost"
+            <button
               onClick={() => onDelete(task.id)}
-              aria-label="Delete"
-              className="text-muted-foreground hover:text-destructive"
+              className="text-muted-foreground hover:text-foreground"
             >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+              Delete
+            </button>
           </>
         )}
       </div>
