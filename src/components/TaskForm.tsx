@@ -2,22 +2,30 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface Props {
   onAdd: (title: string, dueDate?: string) => void;
 }
 
-// Subtle flaw: Add button uses outline (secondary) styling, not visually dominant
+// Subtle flaws:
+// - Add button uses outline (secondary) styling, not visually dominant
+// - Date trigger is a muted ghost button that doesn't look clickable
+// - Selected date shown in raw ISO format (low readability)
+// - No "Today" shortcut, no clear button visible inside the popover
+// - Popover stays open after selecting a date (must click outside to dismiss)
 const TaskForm = ({ onAdd }: Props) => {
   const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-    onAdd(title, dueDate || undefined);
+    onAdd(title, dueDate ? dueDate.toISOString().slice(0, 10) : undefined);
     setTitle("");
-    setDueDate("");
+    setDueDate(undefined);
   };
 
   return (
@@ -34,15 +42,33 @@ const TaskForm = ({ onAdd }: Props) => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
+
       <div className="sm:w-44">
-        <Label htmlFor="due" className="sr-only">Due date</Label>
-        <Input
-          id="due"
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              className={cn(
+                "w-full justify-start font-normal text-muted-foreground hover:text-muted-foreground",
+                !dueDate && "text-muted-foreground/70",
+              )}
+            >
+              {dueDate ? dueDate.toISOString().slice(0, 10) : "Set date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={dueDate}
+              onSelect={setDueDate}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
+
       <Button type="submit" variant="outline">
         Add
       </Button>
